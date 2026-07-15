@@ -1,0 +1,28 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+
+# Local environments
+.venv/
+venv/
+env/
+
+# Large local data and outputs
+data/
+runs/
+logs/
+checkpoints/
+wandb/
+lightning_logs/
+*.ckpt
+*.pt
+*.pth
+*.npy
+*.npz
+*.fits
+*.fit
+*.fits.gz
+*.fit.gz
