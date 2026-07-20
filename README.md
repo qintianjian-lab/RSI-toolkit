@@ -89,6 +89,15 @@ typically length 4000, and should be readable from the directory where the
 command is run. Set `RSI_MAE_TRAIN_INDEX` and `RSI_MAE_VAL_INDEX` to the train
 and validation cache-index CSV files when running `pretrain-mae`.
 
+## Candidate Catalog
+
+The final RSI-selected PSB/E+A candidate tables are provided under
+`candidates/`:
+
+- `psb_candidates.csv`: object-level candidate catalog.
+- `psb_candidate_spectra.csv`: spectrum-level companion table for retained
+  LAMOST spectra.
+
 ## Workflow Commands
 
 Typical workflow:
