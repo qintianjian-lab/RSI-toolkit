@@ -16,14 +16,15 @@ share the same `candidate_id`.
 
 - `candidate_id`: RSI candidate identifier.
 - `ra_deg`, `dec_deg`, `redshift`: sky position and redshift.
-- `visual_quality_grade`: visual-quality grade from full-spectrum inspection
-  (`A`: clean, `B`: plausible, `C`: borderline/contaminated, `D`: weak visual
-  support).
 - `representative_spectrum_id`, `representative_obsid`: representative LAMOST
   spectrum and observation identifiers in `psb_candidates.csv`.
 - `spectrum_id`, `obsid`: LAMOST spectrum and observation identifiers in
   `psb_candidate_spectra.csv`.
-- `conservative_core`: marks candidates in the nested conservative subset.
+- `conservative_core`: marks membership in the nested conservative subset
+  defined by the combined criteria described in the paper.
+- `visual_assessment_grade`: auxiliary spectrum-level grade from full-spectrum
+  visual inspection (`A`: clean, `B`: plausible, `C`: borderline/contaminated,
+  `D`: weak visual support). It is not a confirmation label.
 - `n_retained_spectra`: number of retained spectra associated with the
   candidate object.
 - `snr_4000_5000`: median-flux S/N proxy over 4000-5000 Angstrom in the rest
