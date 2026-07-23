@@ -19,7 +19,10 @@ CFG = {
         "cached_val_index_csv": os.environ.get("RSI_MAE_VAL_INDEX", ""),
     },
     "model": {
-        # Keep these aligned with downstream sbm_universal settings for transfer.
+        # Backward-compatible default: pre-train the common SBM stem/stage encoder.
+        # Set encoder_model="sbm_universal_v2" and global_mixer="transformer" to
+        # pre-train the full v2 encoder used by the main downstream classifier.
+        "encoder_model": os.environ.get("RSI_MAE_ENCODER_MODEL", "sbm_universal"),
         "block_type": "mspc",
         "stem_type": "mspc_legacy",
         "preband_split": True,
@@ -45,6 +48,13 @@ CFG = {
         },
         "k_low": 65,
         "k_mid": 17,
+        # Only used when encoder_model is sbm_universal_v2.
+        "global_mixer": os.environ.get("RSI_MAE_GLOBAL_MIXER", "none"),
+        "global_mixer_depth": 1,
+        "global_attn_heads": 4,
+        "global_pos_encoding": "sincos",
+        "global_learned_pos_max_len": 512,
+        "global_mixer_insert_after": "stage4",
         # Weak decoder
         "decoder_hidden": 128,
         "decoder_fullres_refine": True,

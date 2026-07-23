@@ -85,6 +85,7 @@ class LitUniversalMAE(pl.LightningModule):
         self.model = SBMUniversalMAE(
             in_channel=1,
             spectrum_size=int(data["spectrum_size"]),
+            encoder_model=str(model.get("encoder_model", "sbm_universal")),
             block_type=model.get("block_type", "mspc"),
             stem_type=model.get("stem_type", "mspc"),
             preband_split=bool(model.get("preband_split", True)),
@@ -96,6 +97,12 @@ class LitUniversalMAE(pl.LightningModule):
             mspc_block_kwargs=model.get("mspc_block_kwargs", None),
             k_low=int(model.get("k_low", 65)),
             k_mid=int(model.get("k_mid", 17)),
+            global_mixer=str(model.get("global_mixer", "none")),
+            global_mixer_depth=int(model.get("global_mixer_depth", 1)),
+            global_attn_heads=int(model.get("global_attn_heads", 4)),
+            global_pos_encoding=str(model.get("global_pos_encoding", "none")),
+            global_learned_pos_max_len=int(model.get("global_learned_pos_max_len", 512)),
+            global_mixer_insert_after=str(model.get("global_mixer_insert_after", "stage4")),
             decoder_hidden=int(model.get("decoder_hidden", 128)),
             decoder_fullres_refine=bool(model.get("decoder_fullres_refine", True)),
         )

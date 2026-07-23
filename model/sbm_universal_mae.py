@@ -7,7 +7,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from model.sbm_universal import SBM_Universal_Framework
+from model.sbm_universal import SBM_Universal_Framework as SBMUniversalV1
+from model.sbm_universal_v2 import SBM_Universal_Framework as SBMUniversalV2
 
 
 @dataclass(frozen=True)
@@ -16,9 +17,18 @@ class UniversalMAEOutput:
     fmap: torch.Tensor   # [B,C,L']
 
 
+def _resolve_backbone_class(encoder_model: str):
+    key = str(encoder_model or "sbm_universal").strip().lower()
+    if key in {"sbm_universal", "sbm_universal_v1", "v1"}:
+        return SBMUniversalV1
+    if key in {"sbm_universal_v2", "v2"}:
+        return SBMUniversalV2
+    raise ValueError("encoder_model must be 'sbm_universal' or 'sbm_universal_v2'")
+
+
 class SBMUniversalEncoder(nn.Module):
     """
-    Backbone-only encoder that stays shape-compatible with downstream SBM_Universal_Framework.
+    Backbone-only encoder used for masked-reconstruction pre-training.
     """
 
     def __init__(
@@ -26,6 +36,7 @@ class SBMUniversalEncoder(nn.Module):
         in_channel: int,
         spectrum_size: int,
         *,
+        encoder_model: str = "sbm_universal",
         block_type: str | dict = "mspc",
         stem_type: str | dict = "mspc",
         preband_split: bool = True,
@@ -37,24 +48,43 @@ class SBMUniversalEncoder(nn.Module):
         mspc_block_kwargs: dict[str, Any] | None = None,
         k_low: int = 65,
         k_mid: int = 17,
+        global_mixer: str = "none",
+        global_mixer_depth: int = 1,
+        global_attn_heads: int = 4,
+        global_pos_encoding: str = "none",
+        global_learned_pos_max_len: int = 512,
+        global_mixer_insert_after: str = "stage4",
     ):
         super().__init__()
-        self.backbone = SBM_Universal_Framework(
-            in_channel=in_channel,
-            out_channel=2,  # dummy (head unused in pretraining)
-            spectrum_size=spectrum_size,
-            block_type=block_type,
-            stem_type=stem_type,
-            preband_split=preband_split,
-            stage_depths=stage_depths,
-            band_stage_depths=band_stage_depths,
-            base_channels=base_channels,
-            drop_path=drop_path,
-            mspc_stem_kwargs=mspc_stem_kwargs,
-            mspc_block_kwargs=mspc_block_kwargs,
-            k_low=k_low,
-            k_mid=k_mid,
-        )
+        backbone_cls = _resolve_backbone_class(encoder_model)
+        backbone_kwargs: dict[str, Any] = {
+            "in_channel": in_channel,
+            "out_channel": 2,  # dummy (head unused in pretraining)
+            "spectrum_size": spectrum_size,
+            "block_type": block_type,
+            "stem_type": stem_type,
+            "preband_split": preband_split,
+            "stage_depths": stage_depths,
+            "band_stage_depths": band_stage_depths,
+            "base_channels": base_channels,
+            "drop_path": drop_path,
+            "mspc_stem_kwargs": mspc_stem_kwargs,
+            "mspc_block_kwargs": mspc_block_kwargs,
+            "k_low": k_low,
+            "k_mid": k_mid,
+        }
+        if backbone_cls is SBMUniversalV2:
+            backbone_kwargs.update(
+                {
+                    "global_mixer": global_mixer,
+                    "global_mixer_depth": global_mixer_depth,
+                    "global_attn_heads": global_attn_heads,
+                    "global_pos_encoding": global_pos_encoding,
+                    "global_learned_pos_max_len": global_learned_pos_max_len,
+                    "global_mixer_insert_after": global_mixer_insert_after,
+                }
+            )
+        self.backbone = backbone_cls(**backbone_kwargs)
         self.out_channels = int(self.backbone.stage4.out_ch)
 
     def forward_fmap(self, x: torch.Tensor) -> torch.Tensor:
@@ -70,7 +100,11 @@ class SBMUniversalEncoder(nn.Module):
         x = m.stage1(x)
         x = m.stage2(x)
         x = m.stage3(x)
+        if getattr(m, "global_mixer_insert_after", None) == "stage3":
+            x = m.global_mixer(x)
         x = m.stage4(x)
+        if getattr(m, "global_mixer_insert_after", None) == "stage4":
+            x = m.global_mixer(x)
         return x
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -139,6 +173,7 @@ class SBMUniversalMAE(nn.Module):
         in_channel: int,
         spectrum_size: int,
         *,
+        encoder_model: str = "sbm_universal",
         block_type: str | dict = "mspc",
         stem_type: str | dict = "mspc",
         preband_split: bool = True,
@@ -150,6 +185,12 @@ class SBMUniversalMAE(nn.Module):
         mspc_block_kwargs: dict[str, Any] | None = None,
         k_low: int = 65,
         k_mid: int = 17,
+        global_mixer: str = "none",
+        global_mixer_depth: int = 1,
+        global_attn_heads: int = 4,
+        global_pos_encoding: str = "none",
+        global_learned_pos_max_len: int = 512,
+        global_mixer_insert_after: str = "stage4",
         decoder_hidden: int = 128,
         decoder_fullres_refine: bool = True,
     ):
@@ -157,6 +198,7 @@ class SBMUniversalMAE(nn.Module):
         self.encoder = SBMUniversalEncoder(
             in_channel=in_channel,
             spectrum_size=spectrum_size,
+            encoder_model=encoder_model,
             block_type=block_type,
             stem_type=stem_type,
             preband_split=preband_split,
@@ -168,6 +210,12 @@ class SBMUniversalMAE(nn.Module):
             mspc_block_kwargs=mspc_block_kwargs,
             k_low=k_low,
             k_mid=k_mid,
+            global_mixer=global_mixer,
+            global_mixer_depth=global_mixer_depth,
+            global_attn_heads=global_attn_heads,
+            global_pos_encoding=global_pos_encoding,
+            global_learned_pos_max_len=global_learned_pos_max_len,
+            global_mixer_insert_after=global_mixer_insert_after,
         )
         self.decoder = WeakProgressiveDecoder1D(
             in_channels=self.encoder.out_channels,
@@ -180,4 +228,3 @@ class SBMUniversalMAE(nn.Module):
         fmap = self.encoder.forward_fmap(x)
         recon = self.decoder(fmap)
         return UniversalMAEOutput(recon=recon, fmap=fmap)
-
