@@ -3,6 +3,8 @@
 Code for Rare-object Spectral Identification (RSI), a framework for rare-target
 identification in one-dimensional galaxy spectra.
 
+![RSI method overview](assets/rsi_method_overview.png)
+
 ## Installation
 
 From this directory:
