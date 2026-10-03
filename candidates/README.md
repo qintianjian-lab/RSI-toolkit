@@ -34,3 +34,12 @@ share the same `candidate_id`.
   measurements in Angstrom. Absorption is positive and emission is negative.
 
 These tables list candidate objects; confirmation requires follow-up observations.
+
+## Measurement update (2026-10-03)
+
+[O II] EWs were corrected using the full adopted blue continuum window,
+3653-3713 Angstrom, rather than truncating it at 3700 Angstrom before
+measurement. Other line EWs, SNR, candidate IDs, representative spectra,
+and memberships are unchanged: 145 objects, 160 retained spectra and the
+nested 90-spectrum core. Both tables correspond to the updated full-window
+measurements in the companion RSI-toolkit analysis release.
