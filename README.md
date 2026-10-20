@@ -124,3 +124,11 @@ prepare fold-format data
 | Checkpoint evaluation | `evaluate` |
 | Repeated fold training/evaluation | `repeat` |
 | Archive scoring | `mine` |
+
+## License
+
+RSI-authored code uses the MIT license in `LICENSE`. The GANDALF-derived
+component has separate GPL version 3 terms; see its
+[component notice](rsi/paper_steps/generative/gandalf/README.md).
+Candidate tables and their documentation use CC BY 4.0; see
+[`candidates/LICENSE.txt`](candidates/LICENSE.txt).

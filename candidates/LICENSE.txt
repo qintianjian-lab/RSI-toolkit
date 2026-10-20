@@ -1,0 +1,21 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+The RSI candidate tables psb_candidates.csv and psb_candidate_spectra.csv,
+and the accompanying data documentation, are licensed under CC BY 4.0.
+
+Attribution: Wangweifan Xu and Jingjing Wu.
+Title: The data for "RSI: A Framework for Identifying Rare Post-Starburst
+Galaxies in Large Spectroscopic Surveys".
+Source: https://doi.org/10.5281/zenodo.23495054
+
+You may share and adapt this material under the terms of CC BY 4.0.
+Give appropriate credit, provide a link to the license, and indicate if
+changes were made. No additional restrictions may be imposed contrary
+to the license. The full legal terms, including limitations and the
+disclaimer of warranties, are available at:
+
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+This license applies only to the supplied candidate data products and
+their documentation. Original LAMOST/SDSS survey material is not included
+or relicensed. Software has separate licensing terms.

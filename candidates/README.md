@@ -43,3 +43,9 @@ measurement. Other line EWs, SNR, candidate IDs, representative spectra,
 and memberships are unchanged: 145 objects, 160 retained spectra and the
 nested 90-spectrum core. Both tables correspond to the updated full-window
 measurements in the companion RSI-toolkit analysis release.
+
+## License
+
+These candidate tables and their data documentation use CC BY 4.0.
+See [LICENSE.txt](LICENSE.txt). Original survey spectra are not included
+or relicensed.
