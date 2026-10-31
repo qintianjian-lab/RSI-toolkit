@@ -12,6 +12,12 @@ The object-level table uses one representative spectrum per candidate object.
 The spectrum-level table preserves all retained spectra, so multiple rows may
 share the same `candidate_id`.
 
+The broad catalog contains 133 objects and 144 retained spectra. Its nested
+conservative core contains 73 objects and 80 spectra. Previously reported
+PSB/E+A sources are excluded through 3 arcsec matching to the literature
+compilation and known-positive benchmark, supplemented by catalog queries.
+Candidate objects are numbered consecutively from RSI-PSB-0001 to RSI-PSB-0133.
+
 ## Columns
 
 - `candidate_id`: RSI candidate identifier.
@@ -33,16 +39,15 @@ share the same `candidate_id`.
   `ew_hbeta_4861`, `ew_halpha_6563`: Goto-style equivalent-width
   measurements in Angstrom. Absorption is positive and emission is negative.
 
-These tables list candidate objects; confirmation requires follow-up observations.
+These tables list candidate objects.
 
-## Measurement update (2026-10-03)
+## Measurements
 
-[O II] EWs were corrected using the full adopted blue continuum window,
-3653-3713 Angstrom, rather than truncating it at 3700 Angstrom before
-measurement. Other line EWs, SNR, candidate IDs, representative spectra,
-and memberships are unchanged: 145 objects, 160 retained spectra and the
-nested 90-spectrum core. Both tables correspond to the updated full-window
-measurements in the companion RSI-toolkit analysis release.
+EWs are measured on the original spectra over the full adopted line and
+continuum windows. The [O II] blue continuum window spans 3653-3713 Angstrom.
+The measurements follow the same prescription as the companion RSI-toolkit
+analysis release. Hbeta is the measured line EW without an emission-infill
+correction.
 
 ## License
 
