@@ -3,6 +3,9 @@
 Code for Rare-object Spectral Identification (RSI), a framework for rare-target
 identification in one-dimensional galaxy spectra.
 
+The citable software release is archived on
+[Zenodo (v0.1.0)](https://doi.org/10.5281/zenodo.23494922).
+
 ![RSI method overview](assets/rsi_method_overview.png)
 
 ## Installation
@@ -29,6 +32,9 @@ Use `python -m rsi <command> --help` to view the full argument list for a
 specific command.
 
 ## Expected Data
+
+The trained model weights and five-fold sample lists are available on
+[Zenodo](https://doi.org/10.5281/zenodo.23967558).
 
 ### Fold-Format Dataset
 
@@ -99,6 +105,9 @@ The final RSI-selected PSB/E+A candidate tables are provided under
 - `psb_candidates.csv`: object-level candidate catalog.
 - `psb_candidate_spectra.csv`: spectrum-level companion table for retained
   LAMOST spectra.
+
+The candidate tables and their documentation are archived on
+[Zenodo (v1.1.0)](https://doi.org/10.5281/zenodo.23838453).
 
 ## Workflow Commands
 
